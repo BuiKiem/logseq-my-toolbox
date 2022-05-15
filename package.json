@@ -1,0 +1,18 @@
+{
+  "name": "logseq-my-todoist",
+  "version": "0.0.1",
+  "author": "Bùi Kiệm",
+  "description": "My personal logseq todist integration plugin",
+  "main": "dist/index.html",
+  "license": "MIT",
+  "dependencies": {
+    "@logseq/libs": "latest"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "logseq": {
+    "id": "_nqypl9xpf"
+  }
+}
