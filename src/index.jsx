@@ -7,8 +7,17 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { App } from "./app";
 
+const TODOIST_API_KEY = "mytodoist_api_key";
+
+function onSettingsChange() {
+  const apiKey = logseq.settings?.[TODOIST_API_KEY] ?? "API key not found";
+  console.info(`API key: ${apiKey}`);
+}
+
 function main() {
   console.info("BuiKiem todoist plugin loaded");
+  onSettingsChange();
+  logseq.onSettingsChanged(onSettingsChange);
 
   ReactDOM.render(
     <React.StrictMode>
@@ -19,7 +28,7 @@ function main() {
 
   // Register pull tasks command
   logseq.Editor.registerSlashCommand("buikiem - pull tasks", async () => {
-    logseq.App.showMsg("TODO: Pull tasks with specified filter");
+    console.info("TODO: Pull tasks with specified filter");
   });
 }
 
@@ -27,7 +36,7 @@ function main() {
 logseq
   .useSettingsSchema([
     {
-      key: "api_key",
+      key: TODOIST_API_KEY,
       default: "",
       description: "Todoist API key",
       title: "Todoist API Key",
