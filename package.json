@@ -8,6 +8,7 @@
   "dependencies": {
     "@logseq/libs": "0.0.6",
     "axios": "^0.27.2",
+    "dayjs": "^1.11.2",
     "lodash": "^4.17.21",
     "logseq-dateutils": "^0.0.21",
     "react": "^17.0.2",

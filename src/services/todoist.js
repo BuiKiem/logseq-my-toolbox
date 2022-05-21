@@ -1,6 +1,11 @@
 import axios from "axios";
-import { getScheduledDeadlineDateDay } from "logseq-dateutils";
+import {
+  getScheduledDeadlineDateDay,
+  getScheduledDeadlineDateDayTime,
+} from "logseq-dateutils";
 import _ from "lodash";
+
+import { dayjs } from "../libs/dayjs";
 
 import { TODOIST_API_KEY } from "../constants";
 
@@ -48,7 +53,8 @@ export const pullTodayTasks = async () => {
   try {
     const response = await axios.get("https://api.todoist.com/rest/v1/tasks", {
       params: {
-        filter: "(overdue | today) & ##personal",
+        // filter: "(overdue | today) & ##personal",
+        filter: "tomorrow & !##WORK",
       },
       headers: {
         Authorization: `Bearer ${logseq.settings?.[TODOIST_API_KEY]}`,
@@ -60,17 +66,19 @@ export const pullTodayTasks = async () => {
     } else {
       const sortedTasks = _.sortBy(response.data, [
         (task) =>
-          task.due.datetime
+          task.due?.datetime
             ? new Date(task.due.datetime)
             : new Date(task.due.date),
       ]);
       return {
         tasksArray: sortedTasks.map((task) => ({
-          content: `TODO ${task.content} [src](${
-            task.url
-          })\nSCHEDULED: <${getScheduledDeadlineDateDay(
-            new Date(task.due.date)
-          )}${task.due.datetime ? ` ${task.due.string.slice(-5)}` : ""}>`,
+          content: `TODO ${task.content} [src](${task.url})\nSCHEDULED: <${
+            task.due.datetime
+              ? getScheduledDeadlineDateDayTime(
+                  dayjs(task.due.datetime).tz("Asia/Ho_Chi_Minh").toDate()
+                )
+              : getScheduledDeadlineDateDay(new Date(task.due.date))
+          }>`,
         })),
         taskIdsArray: response.data.map((task) => task.id),
       };
