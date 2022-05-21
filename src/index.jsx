@@ -7,7 +7,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { App } from "./app";
 import { TODOIST_API_KEY } from "./constants";
-import { pullTodayTasks } from "./services/tasks";
+import { pullTodayTasks, pullFilters } from "./services/tasks";
 
 function onSettingsChange() {
   const apiKey = logseq.settings?.[TODOIST_API_KEY] ?? "API key not found";
@@ -39,6 +39,26 @@ function main() {
       await logseq.Editor.insertBatchBlock(
         currentBlock.uuid,
         tasksArray.tasksArray,
+        {
+          sibling: !parent,
+          before: true,
+        }
+      );
+    }
+  });
+
+  logseq.Editor.registerSlashCommand("buikiem - pull filters", async () => {
+    console.info("Pull filters");
+
+    const filtersArray = await pullFilters();
+    const currentBlock = await logseq.Editor.getCurrentBlock();
+
+    if (currentBlock && filtersArray) {
+      await logseq.Editor.updateBlock(currentBlock.uuid, "Filters");
+
+      await logseq.Editor.insertBatchBlock(
+        currentBlock.uuid,
+        filtersArray.filtersArray,
         {
           sibling: !parent,
           before: true,

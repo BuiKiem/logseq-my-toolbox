@@ -13,6 +13,35 @@ export const getProjectName = async (projectId) => {
   );
 };
 
+export const pullFilters = async () => {
+  try {
+    const response = await axios.post(
+      "https://api.todoist.com/sync/v8/sync",
+      {
+        sync_token: "*",
+        resource_types: '["filters"]',
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${logseq.settings?.[TODOIST_API_KEY]}`,
+        },
+      }
+    );
+
+    if (response.data?.["filters"].length === 0) {
+      logseq.App.showMsg("There are no filters found");
+    } else {
+      return {
+        filtersArray: response.data?.["filters"].map((filter) => ({
+          content: `${filter.id} - ${filter.name}`,
+        })),
+      };
+    }
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 export const pullTodayTasks = async () => {
   try {
     const response = await axios.get("https://api.todoist.com/rest/v1/tasks", {
