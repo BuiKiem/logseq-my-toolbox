@@ -7,7 +7,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { App } from "./app";
 import { TODOIST_API_KEY } from "./constants";
-import { pullTodayTasks, pullFilters } from "./services/tasks";
+import { pullTodayTasks, pullFilters } from "./services/todoist";
 
 function onSettingsChange() {
   const apiKey = logseq.settings?.[TODOIST_API_KEY] ?? "API key not found";
