@@ -1,4 +1,6 @@
 import axios from "axios";
+import { getScheduledDeadlineDateDay } from "logseq-dateutils";
+import _ from "lodash";
 
 import { TODOIST_API_KEY } from "../constants";
 
@@ -56,9 +58,19 @@ export const pullTodayTasks = async () => {
     if (response.data.length === 0) {
       logseq.App.showMsg("There are no tasks due today");
     } else {
+      const sortedTasks = _.sortBy(response.data, [
+        (task) =>
+          task.due.datetime
+            ? new Date(task.due.datetime)
+            : new Date(task.due.date),
+      ]);
       return {
-        tasksArray: response.data.map((task) => ({
-          content: `TODO ${task.content} [src](${task.url})`,
+        tasksArray: sortedTasks.map((task) => ({
+          content: `TODO ${task.content} [src](${
+            task.url
+          })\nSCHEDULED: <${getScheduledDeadlineDateDay(
+            new Date(task.due.date)
+          )}${task.due.datetime ? ` ${task.due.string.slice(-5)}` : ""}>`,
         })),
         taskIdsArray: response.data.map((task) => task.id),
       };
