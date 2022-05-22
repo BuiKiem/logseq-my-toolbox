@@ -3,11 +3,11 @@ import {
   getScheduledDeadlineDateDay,
   getScheduledDeadlineDateDayTime,
 } from "logseq-dateutils";
-import _ from "lodash";
 
 import { dayjs } from "../../libs/dayjs";
 
 import { TODOIST_API_KEY } from "../../constants";
+import { sortTasks } from "./utils";
 
 export const pullFilters = async () => {
   try {
@@ -56,12 +56,7 @@ export const pullTodayTasks = async () => {
       logseq.App.showMsg("There are no tasks due today");
       return null;
     }
-    const sortedTasks = _.sortBy(response.data, [
-      (task) =>
-        task.due?.datetime
-          ? new Date(task.due.datetime)
-          : new Date(task.due.date),
-    ]);
+    const sortedTasks = sortTasks(response.data);
     return {
       tasksArray: sortedTasks.map((task) => ({
         content: `TODO ${task.content} [src](${task.url})\nSCHEDULED: <${
