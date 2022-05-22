@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import reactPlugin from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import logseqDevPlugin from "vite-plugin-logseq";

@@ -9,17 +9,6 @@ import { dayjs } from "../libs/dayjs";
 
 import { TODOIST_API_KEY } from "../constants";
 
-export const getProjectName = async (projectId) => {
-  const project = await axios.get(
-    `https://api.todoist.com/rest/v1/projects/${projectId}`,
-    {
-      headers: {
-        Authorization: `Bearer ${logseq.settings?.[TODOIST_API_KEY]}`,
-      },
-    }
-  );
-};
-
 export const pullFilters = async () => {
   try {
     const response = await axios.post(
@@ -35,17 +24,17 @@ export const pullFilters = async () => {
       }
     );
 
-    if (response.data?.["filters"].length === 0) {
+    if (response.data?.filters.length === 0) {
       logseq.App.showMsg("There are no filters found");
-    } else {
-      return {
-        filtersArray: response.data?.["filters"].map((filter) => ({
-          content: `${filter.id} - ${filter.name}`,
-        })),
-      };
+      return null;
     }
+    return {
+      filtersArray: response.data?.filters.map((filter) => ({
+        content: `${filter.id} - ${filter.name}`,
+      })),
+    };
   } catch (e) {
-    console.error(e);
+    return null;
   }
 };
 
@@ -63,7 +52,8 @@ export const pullTodayTasks = async () => {
 
     if (response.data.length === 0) {
       logseq.App.showMsg("There are no tasks due today");
-    } else {
+      return null;
+    } 
       const sortedTasks = _.sortBy(response.data, [
         (task) =>
           task.due?.datetime
@@ -82,8 +72,9 @@ export const pullTodayTasks = async () => {
         })),
         taskIdsArray: response.data.map((task) => task.id),
       };
-    }
+    
   } catch (e) {
-    console.error(e);
+    logseq.App.showMsg(`Error pulling tasks. Detail: ${e}`);
+    return null;
   }
 };
