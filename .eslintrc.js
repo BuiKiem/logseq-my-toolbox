@@ -14,6 +14,9 @@ module.exports = {
   plugins: ["react"],
   rules: {
     "import/prefer-default-export": "off",
+    "react/jsx-uses-react": "off",
+    "react/react-in-jsx-scope": "off",
+    "import/no-extraneous-dependencies": "off",
   },
   globals: {
     logseq: "readonly",

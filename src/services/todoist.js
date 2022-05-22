@@ -38,6 +38,8 @@ export const pullFilters = async () => {
   }
 };
 
+export const sum = (a, b) => a + b;
+
 export const pullTodayTasks = async () => {
   try {
     const response = await axios.get("https://api.todoist.com/rest/v1/tasks", {
@@ -53,26 +55,25 @@ export const pullTodayTasks = async () => {
     if (response.data.length === 0) {
       logseq.App.showMsg("There are no tasks due today");
       return null;
-    } 
-      const sortedTasks = _.sortBy(response.data, [
-        (task) =>
-          task.due?.datetime
-            ? new Date(task.due.datetime)
-            : new Date(task.due.date),
-      ]);
-      return {
-        tasksArray: sortedTasks.map((task) => ({
-          content: `TODO ${task.content} [src](${task.url})\nSCHEDULED: <${
-            task.due.datetime
-              ? getScheduledDeadlineDateDayTime(
-                  dayjs(task.due.datetime).tz("Asia/Ho_Chi_Minh").toDate()
-                )
-              : getScheduledDeadlineDateDay(new Date(task.due.date))
-          }>`,
-        })),
-        taskIdsArray: response.data.map((task) => task.id),
-      };
-    
+    }
+    const sortedTasks = _.sortBy(response.data, [
+      (task) =>
+        task.due?.datetime
+          ? new Date(task.due.datetime)
+          : new Date(task.due.date),
+    ]);
+    return {
+      tasksArray: sortedTasks.map((task) => ({
+        content: `TODO ${task.content} [src](${task.url})\nSCHEDULED: <${
+          task.due.datetime
+            ? getScheduledDeadlineDateDayTime(
+                dayjs(task.due.datetime).tz("Asia/Ho_Chi_Minh").toDate()
+              )
+            : getScheduledDeadlineDateDay(new Date(task.due.date))
+        }>`,
+      })),
+      taskIdsArray: response.data.map((task) => task.id),
+    };
   } catch (e) {
     logseq.App.showMsg(`Error pulling tasks. Detail: ${e}`);
     return null;
