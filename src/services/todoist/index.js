@@ -5,9 +5,9 @@ import {
 } from "logseq-dateutils";
 import _ from "lodash";
 
-import { dayjs } from "../libs/dayjs";
+import { dayjs } from "../../libs/dayjs";
 
-import { TODOIST_API_KEY } from "../constants";
+import { TODOIST_API_KEY } from "../../constants";
 
 export const pullFilters = async () => {
   try {
