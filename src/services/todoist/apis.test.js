@@ -1,6 +1,6 @@
 import axios from "axios";
 import { test, describe, expect } from "@jest/globals";
-import { getActiveTasks } from "./apis";
+import { getActiveTasks, getAllProjects } from "./apis";
 
 jest.mock("axios");
 
@@ -32,6 +32,26 @@ describe("getActiveTasks", () => {
     };
 
     await getActiveTasks(expect.anything(), filter);
+
+    expect(axios.get).toBeCalledWith(expect.anything(), expected);
+  });
+});
+
+describe("getAllProjects", () => {
+  test("should call axios.get method", async () => {
+    await getAllProjects();
+    expect(axios.get).toBeCalled();
+  });
+
+  test("should call axios.get with token as headers.Authorization", async () => {
+    const token = "token";
+    const expected = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    await getAllProjects(token, expect.anything());
 
     expect(axios.get).toBeCalledWith(expect.anything(), expected);
   });
