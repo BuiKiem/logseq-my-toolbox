@@ -54,9 +54,7 @@ describe("sortTasks", () => {
     expect(sortTasks(input)).toEqual(expected);
   });
 
-  test("should put task with smaller due.date first with different due.date", () => {});
+  test.skip("should put task with smaller due.date first with different due.date", () => {});
 
-  test(
-    "should put task with smaller due.datetime first with different due.datetime"
-  );
+  test.skip("should put task with smaller due.datetime first with different due.datetime", () => {});
 });

@@ -8,6 +8,7 @@ import { dayjs } from "../../libs/dayjs";
 
 import { TODOIST_API_KEY } from "../../constants";
 import { sortTasks } from "./utils";
+import { getActiveTasks } from "./apis";
 
 export const pullFilters = async () => {
   try {
@@ -42,15 +43,10 @@ export const sum = (a, b) => a + b;
 
 export const pullTodayTasks = async () => {
   try {
-    const response = await axios.get("https://api.todoist.com/rest/v1/tasks", {
-      params: {
-        // filter: "(overdue | today) & ##personal",
-        filter: "tomorrow & !##WORK",
-      },
-      headers: {
-        Authorization: `Bearer ${logseq.settings?.[TODOIST_API_KEY]}`,
-      },
-    });
+    const response = await getActiveTasks(
+      logseq.settings?.[TODOIST_API_KEY],
+      "tomorrow & !##WORK"
+    );
 
     if (response.data.length === 0) {
       logseq.App.showMsg("There are no tasks due today");

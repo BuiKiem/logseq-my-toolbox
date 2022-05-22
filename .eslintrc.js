@@ -20,5 +20,6 @@ module.exports = {
   },
   globals: {
     logseq: "readonly",
+    jest: "readonly",
   },
 };

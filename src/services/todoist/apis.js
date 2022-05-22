@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const getActiveTasks = (token, filter) =>
+export const getActiveTasks = async (token, filter) =>
   axios.get("https://api.todoist.com/rest/v1/tasks", {
     params: {
       // filter: "(overdue | today) & ##personal",
