@@ -9,12 +9,11 @@ import { TODOIST_API_KEY } from "../../constants";
 import { sortTasks } from "../../services/todoist/utils";
 import { getActiveTasks, getAllProjects } from "../../services/todoist/apis";
 
-export const pullTodayTasks = async () => {
-  const todoistToken = logseq.settings?.[TODOIST_API_KEY];
+export const pullTasksByFilter = async (token, filter) => {
   try {
     const [tasksResponse, projectsResponse] = await Promise.all([
-      getActiveTasks(todoistToken, "tomorrow & !##WORK"),
-      getAllProjects(todoistToken),
+      getActiveTasks(token, filter),
+      getAllProjects(token),
     ]);
     const projectsById = _.keyBy(projectsResponse.data, "id");
     if (tasksResponse.data.length === 0) {
@@ -38,4 +37,14 @@ export const pullTodayTasks = async () => {
     logseq.App.showMsg(`Error pulling tasks. Detail: ${e}`);
     return null;
   }
+};
+
+export const pullTodayPersonalTasks = () => {
+  const todoistToken = logseq.settings?.[TODOIST_API_KEY];
+  return pullTasksByFilter(todoistToken, "(overdue | today) & ##personal");
+};
+
+export const pullTomorrowPersonalTasks = () => {
+  const todoistToken = logseq.settings?.[TODOIST_API_KEY];
+  return pullTasksByFilter(todoistToken, "tomorrow & !##WORK");
 };

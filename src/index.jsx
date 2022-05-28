@@ -9,8 +9,10 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { App } from "./app";
 import { TODOIST_API_KEY } from "./constants";
-import { pullFilters } from "./services/todoist";
-import { pullTodayTasks } from "./features/tasks";
+import {
+  pullTodayPersonalTasks,
+  pullTomorrowPersonalTasks,
+} from "./features/tasks";
 
 function onSettingsChange() {
   const apiKey = logseq.settings?.[TODOIST_API_KEY] ?? "API key not found";
@@ -30,10 +32,8 @@ function main() {
   );
 
   // Register pull tasks command
-  logseq.Editor.registerSlashCommand("buikiem - pull tasks", async () => {
-    console.info("TODO: Pull tasks with specified filter");
-
-    const tasksArray = await pullTodayTasks();
+  logseq.Editor.registerSlashCommand("buikiem - pull today tasks", async () => {
+    const tasksArray = await pullTodayPersonalTasks();
     const currentBlock = await logseq.Editor.getCurrentBlock();
 
     if (currentBlock && tasksArray) {
@@ -50,25 +50,26 @@ function main() {
     }
   });
 
-  logseq.Editor.registerSlashCommand("buikiem - pull filters", async () => {
-    console.info("Pull filters");
+  logseq.Editor.registerSlashCommand(
+    "buikiem - pull tomorrow tasks",
+    async () => {
+      const tasksArray = await pullTomorrowPersonalTasks();
+      const currentBlock = await logseq.Editor.getCurrentBlock();
 
-    const filtersArray = await pullFilters();
-    const currentBlock = await logseq.Editor.getCurrentBlock();
+      if (currentBlock && tasksArray) {
+        await logseq.Editor.updateBlock(currentBlock.uuid, "Tasks for today");
 
-    if (currentBlock && filtersArray) {
-      await logseq.Editor.updateBlock(currentBlock.uuid, "Filters");
-
-      await logseq.Editor.insertBatchBlock(
-        currentBlock.uuid,
-        filtersArray.filtersArray,
-        {
-          sibling: !parent,
-          before: true,
-        }
-      );
+        await logseq.Editor.insertBatchBlock(
+          currentBlock.uuid,
+          tasksArray.tasksArray,
+          {
+            sibling: !parent,
+            before: true,
+          }
+        );
+      }
     }
-  });
+  );
 }
 
 // bootstrap
