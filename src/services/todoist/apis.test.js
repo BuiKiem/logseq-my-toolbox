@@ -1,6 +1,6 @@
 import axios from "axios";
 import { test, describe, expect } from "@jest/globals";
-import { getActiveTasks, getAllProjects } from "./apis";
+import { getActiveTasks, getAllProjects, syncResources } from "./apis";
 
 jest.mock("axios");
 
@@ -51,8 +51,54 @@ describe("getAllProjects", () => {
       },
     };
 
-    await getAllProjects(token, expect.anything());
+    await getAllProjects(token, jest.mock);
 
     expect(axios.get).toBeCalledWith(expect.anything(), expected);
+  });
+});
+
+describe("syncResources", () => {
+  test("should call axios.post method", async () => {
+    const token = "token";
+    const resources = ["projects", "filters"];
+
+    await syncResources(token, resources);
+
+    expect(axios.post).toBeCalled();
+  });
+
+  test("should call axios.post method with body having sync_token and resource_types property", async () => {
+    const token = "token";
+    const resources = ["projects", "filters"];
+    const expected = {
+      sync_token: "*",
+      resource_types: '["projects","filters"]',
+    };
+
+    await syncResources(token, resources);
+
+    expect(axios.post).toBeCalledWith(
+      expect.anything(),
+      expected,
+      expect.anything()
+    );
+  });
+
+  test("should call axios.post with `token` as headers.Authorization", async () => {
+    const token = "token";
+    const resources = ["projects", "filters"];
+    const expected = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    await syncResources(token, resources);
+
+    expect(axios.post).toBeCalledWith(
+      expect.anything(),
+      expect.anything(),
+      expected
+    );
   });
 });

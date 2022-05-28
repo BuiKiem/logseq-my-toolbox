@@ -1,13 +1,16 @@
 /**
  * entry
  */
+/* eslint no-console: off */
+/* eslint no-restricted-globals: off */
 
 import "@logseq/libs";
 import React from "react";
 import ReactDOM from "react-dom";
 import { App } from "./app";
 import { TODOIST_API_KEY } from "./constants";
-import { pullTodayTasks, pullFilters } from "./services/todoist";
+import { pullFilters } from "./services/todoist";
+import { pullTodayTasks } from "./features/tasks";
 
 function onSettingsChange() {
   const apiKey = logseq.settings?.[TODOIST_API_KEY] ?? "API key not found";
